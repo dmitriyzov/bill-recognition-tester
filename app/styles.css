@@ -108,6 +108,11 @@ button.danger {
   background: var(--danger);
 }
 
+button.success {
+  background: var(--ok);
+  color: white;
+}
+
 button:disabled {
   opacity: 0.65;
   cursor: not-allowed;

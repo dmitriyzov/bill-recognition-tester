@@ -19,7 +19,7 @@ export function ValidationForm({ recognitionId }: { recognitionId: number }) {
         </div>
       )}
       <div className="actions">
-        <button type="submit" name="decision" value="accurate">Everything looks good</button>
+        <button className="success" type="submit" name="decision" value="accurate">Looks good</button>
         {!showNotes && (
           <button className="danger" type="button" onClick={() => setShowNotes(true)}>
             Some errors

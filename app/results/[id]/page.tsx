@@ -38,6 +38,23 @@ export default async function ResultPage({ params }: { params: Promise<{ id: str
         </div>
       </div>
 
+      <section className="card" style={{ marginBottom: 20 }}>
+        <h2>Validation</h2>
+        {recognition.status !== "recognized" && (
+          <p className="muted">This result is not validatable because status is <strong>{recognition.status}</strong>.</p>
+        )}
+        {recognition.status === "recognized" && validation && (
+          <p>
+            Recorded decision:{" "}
+            <strong className={validation.decision === "accurate" ? "success" : ""}>
+              {validation.decision === "accurate" ? "Looks good" : "Some errors"}
+            </strong>
+            {validation.notes ? <><br /><span className="muted">Notes: {validation.notes}</span></> : null}
+          </p>
+        )}
+        {recognition.status === "recognized" && !validation && <ValidationForm recognitionId={recognition.id} />}
+      </section>
+
       <div className="grid">
         <section>
           <img className="bill-image" src={publicImagePath(recognition.normalized_image_path)} alt="Uploaded bill" />
@@ -57,23 +74,6 @@ export default async function ResultPage({ params }: { params: Promise<{ id: str
           <p className="muted">Confidence is model-reported and not calibrated. Human validation determines success rate.</p>
         </aside>
       </div>
-
-      <section className="card" style={{ marginTop: 20 }}>
-        <h2>Validation</h2>
-        {recognition.status !== "recognized" && (
-          <p className="muted">This result is not validatable because status is <strong>{recognition.status}</strong>.</p>
-        )}
-        {recognition.status === "recognized" && validation && (
-          <p>
-            Recorded decision:{" "}
-            <strong className={validation.decision === "accurate" ? "success" : ""}>
-              {validation.decision === "accurate" ? "Everything looks good" : "Some errors"}
-            </strong>
-            {validation.notes ? <><br /><span className="muted">Notes: {validation.notes}</span></> : null}
-          </p>
-        )}
-        {recognition.status === "recognized" && !validation && <ValidationForm recognitionId={recognition.id} />}
-      </section>
 
       <section style={{ marginTop: 20 }}>
         <details>
