@@ -99,20 +99,20 @@ export default async function ResultPage({ params }: { params: Promise<{ id: str
 
 function Fields({ parsed }: { parsed: BillRecognitionResult }) {
   const confidence = parsed.confidence_by_field || {};
-  const rows: [string, unknown, string?][] = [
-    ["Denomination", parsed.denomination === null ? null : `$${parsed.denomination}`, confidence.denomination?.toString()],
-    ["Serial number", parsed.serial_number, confidence.serial_number?.toString()],
-    ["Left serial", parsed.left_serial_number, confidence.left_serial_number?.toString()],
-    ["Right serial", parsed.right_serial_number, confidence.right_serial_number?.toString()],
-    ["Serials match", formatBool(parsed.serial_numbers_match), confidence.serial_numbers_match?.toString()],
-    ["Series year", parsed.series_year, confidence.series_year?.toString()],
-    ["Series label", parsed.series_label, confidence.series_label?.toString()],
-    ["Star note", formatBool(parsed.star_note), confidence.star_note?.toString()],
-    ["Side", parsed.side, confidence.side?.toString()],
-    ["Federal Reserve district", parsed.federal_reserve_district, confidence.federal_reserve_district?.toString()],
-    ["Note type", parsed.note_type, confidence.note_type?.toString()],
-    ["Uncertain fields", parsed.uncertain_fields.length ? parsed.uncertain_fields.join(", ") : "None"],
-    ["Model notes", parsed.notes]
+  const rows: [string, unknown, number | null | undefined][] = [
+    ["Denomination", parsed.denomination === null ? null : `$${parsed.denomination}`, confidence.denomination],
+    ["Serial number", parsed.serial_number, confidence.serial_number],
+    ["Left serial", parsed.left_serial_number, confidence.left_serial_number],
+    ["Right serial", parsed.right_serial_number, confidence.right_serial_number],
+    ["Serials match", formatBool(parsed.serial_numbers_match), confidence.serial_numbers_match],
+    ["Series year", parsed.series_year, confidence.series_year],
+    ["Series label", parsed.series_label, confidence.series_label],
+    ["Star note", formatBool(parsed.star_note), confidence.star_note],
+    ["Side", parsed.side, confidence.side],
+    ["Federal Reserve district", parsed.federal_reserve_district, confidence.federal_reserve_district],
+    ["Note type", parsed.note_type, confidence.note_type],
+    ["Uncertain fields", parsed.uncertain_fields.length ? parsed.uncertain_fields.join(", ") : "None", undefined],
+    ["Model notes", parsed.notes, undefined]
   ];
   return (
     <dl className="kv">
@@ -121,12 +121,16 @@ function Fields({ parsed }: { parsed: BillRecognitionResult }) {
           <dt>{label}</dt>
           <dd>
             {formatValue(value)}
-            {conf ? <span className="muted"> · confidence {conf}</span> : null}
+            {shouldShowInlineConfidence(conf) ? <span className="muted"> · confidence {conf.toFixed(2)}</span> : null}
           </dd>
         </React.Fragment>
       ))}
     </dl>
   );
+}
+
+function shouldShowInlineConfidence(value: number | null | undefined): value is number {
+  return typeof value === "number" && value < 1;
 }
 
 function UsageDetails({
