@@ -12,6 +12,11 @@ export function UploadForm() {
     <form action={formAction}>
       {state.error && <p className="error">{state.error}</p>}
       <div className="field">
+        <label htmlFor="image">Bill image</label>
+        <input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp" required />
+        <p className="muted">JPG, PNG, or WebP. Max 10 MB. Front side of one U.S. bill only.</p>
+      </div>
+      <div className="field">
         <label htmlFor="model">Model</label>
         <select id="model" name="model" defaultValue="gemini-2.5-flash">
           {MODEL_OPTIONS.map((model) => (
@@ -21,13 +26,7 @@ export function UploadForm() {
           ))}
         </select>
       </div>
-      <div className="field">
-        <label htmlFor="image">Bill image</label>
-        <input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp" required />
-        <p className="muted">JPG, PNG, or WebP. Max 10 MB. Front side of one U.S. bill only.</p>
-      </div>
       <SubmitButton>Upload and analyze</SubmitButton>
     </form>
   );
 }
-
