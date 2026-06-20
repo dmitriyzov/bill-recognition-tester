@@ -13,6 +13,8 @@ Rules:
 - Preserve serial number characters exactly as shown, including any star symbol.
 - If left and right serial numbers are both readable, report both and whether they match.
 - The MVP success fields are denomination, serial_number, and series_year. Secondary fields are useful but should still be null if unclear.
+- For confidence_by_field, provide a value from 0 to 1 for each field you evaluate. Use lower values for uncertain reads and null only when no confidence can be assigned.
+- Include confidence keys for: denomination, serial_number, left_serial_number, right_serial_number, serial_numbers_match, series_year, series_label, star_note, side, federal_reserve_district, and note_type.
 - Return only JSON matching the requested schema.`;
 
 export const PROMPT_METADATA = {
@@ -20,4 +22,3 @@ export const PROMPT_METADATA = {
   schemaVersion: SCHEMA_VERSION,
   promptText: BILL_EXTRACTION_PROMPT
 };
-

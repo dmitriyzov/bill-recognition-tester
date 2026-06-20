@@ -42,6 +42,7 @@ export default async function ResultPage({ params }: { params: Promise<{ id: str
         <aside className="card">
           <p><span className="pill">{parsed.status}</span></p>
           <Fields parsed={parsed} />
+          <ModelConfidence parsed={parsed} />
           <p className="muted">Confidence is model-reported and not calibrated. Human validation determines success rate.</p>
         </aside>
       </div>
@@ -113,6 +114,37 @@ function Fields({ parsed }: { parsed: BillRecognitionResult }) {
         </React.Fragment>
       ))}
     </dl>
+  );
+}
+
+function ModelConfidence({ parsed }: { parsed: BillRecognitionResult }) {
+  const confidence = parsed.confidence_by_field || {};
+  const rows: [string, number | null | undefined][] = [
+    ["Denomination", confidence.denomination],
+    ["Serial number", confidence.serial_number],
+    ["Left serial", confidence.left_serial_number],
+    ["Right serial", confidence.right_serial_number],
+    ["Serials match", confidence.serial_numbers_match],
+    ["Series year", confidence.series_year],
+    ["Series label", confidence.series_label],
+    ["Star note", confidence.star_note],
+    ["Side", confidence.side],
+    ["Federal Reserve district", confidence.federal_reserve_district],
+    ["Note type", confidence.note_type]
+  ];
+
+  return (
+    <section style={{ marginTop: 20 }}>
+      <h3>Model confidence</h3>
+      <dl className="kv">
+        {rows.map(([label, value]) => (
+          <React.Fragment key={label}>
+            <dt>{label}</dt>
+            <dd>{value === null || value === undefined ? <span className="muted">Not provided</span> : value.toFixed(2)}</dd>
+          </React.Fragment>
+        ))}
+      </dl>
+    </section>
   );
 }
 
