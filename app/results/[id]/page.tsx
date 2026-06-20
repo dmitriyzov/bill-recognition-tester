@@ -143,8 +143,8 @@ function UsageDetails({
   estimatedCostUsd: number | null;
 }) {
   return (
-    <section style={{ marginTop: 20 }}>
-      <h3>Request usage</h3>
+    <details style={{ marginTop: 20 }}>
+      <summary>Request usage</summary>
       <dl className="kv">
         <dt>Estimated cost</dt><dd>{formatUsd(estimatedCostUsd)}</dd>
         <dt>Input tokens</dt><dd>{formatNumber(inputTokens)}</dd>
@@ -153,7 +153,7 @@ function UsageDetails({
         <dt>Latency</dt><dd>{latencyMs === null ? <span className="muted">Not available</span> : `${(latencyMs / 1000).toFixed(2)}s`}</dd>
       </dl>
       <p className="muted">Cost is estimated from stored token usage and configured model pricing. Actual billing may differ.</p>
-    </section>
+    </details>
   );
 }
 
@@ -174,8 +174,8 @@ function ModelConfidence({ parsed }: { parsed: BillRecognitionResult }) {
   ];
 
   return (
-    <section style={{ marginTop: 20 }}>
-      <h3>Model confidence</h3>
+    <details style={{ marginTop: 20 }}>
+      <summary>Model confidence</summary>
       <dl className="kv">
         {rows.map(([label, value]) => (
           <React.Fragment key={label}>
@@ -184,7 +184,7 @@ function ModelConfidence({ parsed }: { parsed: BillRecognitionResult }) {
           </React.Fragment>
         ))}
       </dl>
-    </section>
+    </details>
   );
 }
 
