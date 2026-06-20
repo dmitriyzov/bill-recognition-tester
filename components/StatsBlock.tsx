@@ -1,16 +1,19 @@
-import type { Stats } from "../lib/types";
+import { formatUsd } from "../lib/cost";
+import type { Stats, UsageStats } from "../lib/types";
 
 export function StatsBlock({
   modelLabel,
   modelStats,
   promptVersion,
   promptStats,
+  usageStats,
   compact = false
 }: {
   modelLabel: string;
   modelStats: Stats;
   promptVersion: string;
   promptStats: Stats;
+  usageStats?: UsageStats;
   compact?: boolean;
 }) {
   return (
@@ -19,6 +22,12 @@ export function StatsBlock({
       {!compact && <StatLine title={`Prompt ${promptVersion}`} stats={promptStats} compact={compact} />}
       {(modelStats.pending > 0 || promptStats.pending > 0) && (
         <div className="muted">Pending review: {promptStats.pending} for active prompt, {modelStats.pending} for model.</div>
+      )}
+      {usageStats && (
+        <div className={compact ? "muted" : "stat"}>
+          <div><strong>Estimated API cost</strong></div>
+          <div>{formatUsd(usageStats.estimatedCostUsd)} <span className="muted">across {usageStats.requests} requests</span></div>
+        </div>
       )}
     </div>
   );
@@ -34,4 +43,3 @@ function StatLine({ title, stats, compact }: { title: string; stats: Stats; comp
     </div>
   );
 }
-

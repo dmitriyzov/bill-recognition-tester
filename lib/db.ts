@@ -2,7 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { getDataDir } from "./config";
-import type { RecognitionRow, Stats, ValidationRow } from "./types";
+import { estimateCostUsd } from "./cost";
+import type { RecognitionRow, Stats, UsageStats, ValidationRow } from "./types";
 
 let db: DatabaseSync | null = null;
 
@@ -151,3 +152,34 @@ export function getStats(modelName: string, promptVersion?: string): Stats {
   };
 }
 
+export function getUsageStats(modelName: string, promptVersion?: string): UsageStats {
+  const filter = promptVersion ? "model_name = ? AND prompt_version = ?" : "model_name = ?";
+  const params = promptVersion ? [modelName, promptVersion] : [modelName];
+  const row = getDb()
+    .prepare(
+      `SELECT
+        COUNT(*) AS requests,
+        SUM(COALESCE(input_tokens, 0)) AS inputTokens,
+        SUM(COALESCE(output_tokens, 0)) AS outputTokens,
+        SUM(COALESCE(total_tokens, 0)) AS totalTokens
+       FROM recognitions
+       WHERE ${filter}`
+    )
+    .get(...params) as {
+      requests: number;
+      inputTokens: number | null;
+      outputTokens: number | null;
+      totalTokens: number | null;
+    };
+
+  const inputTokens = row.inputTokens ?? 0;
+  const outputTokens = row.outputTokens ?? 0;
+  const estimatedCostUsd = row.requests > 0 ? estimateCostUsd(modelName, inputTokens, outputTokens) : null;
+  return {
+    requests: row.requests,
+    inputTokens,
+    outputTokens,
+    totalTokens: row.totalTokens ?? 0,
+    estimatedCostUsd
+  };
+}

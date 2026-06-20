@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import React from "react";
 import { requireAuth } from "../../../lib/auth";
-import { getRecognition, getStats, getValidation } from "../../../lib/db";
+import { getRecognition, getStats, getUsageStats, getValidation } from "../../../lib/db";
+import { estimateCostUsd, formatUsd } from "../../../lib/cost";
 import { PROMPT_VERSION } from "../../../lib/config";
 import { MODEL_OPTIONS } from "../../../lib/models";
 import { publicImagePath } from "../../../lib/storage";
@@ -20,6 +21,8 @@ export default async function ResultPage({ params }: { params: Promise<{ id: str
   const modelLabel = modelOption?.label || recognition.model_name;
   const modelStats = getStats(recognition.model_name);
   const promptStats = getStats(recognition.model_name, recognition.prompt_version);
+  const usageStats = getUsageStats(recognition.model_name);
+  const requestCost = estimateCostUsd(recognition.model_name, recognition.input_tokens, recognition.output_tokens);
 
   return (
     <main className="container">
@@ -42,6 +45,13 @@ export default async function ResultPage({ params }: { params: Promise<{ id: str
         <aside className="card">
           <p><span className="pill">{parsed.status}</span></p>
           <Fields parsed={parsed} />
+          <UsageDetails
+            inputTokens={recognition.input_tokens}
+            outputTokens={recognition.output_tokens}
+            totalTokens={recognition.total_tokens}
+            latencyMs={recognition.latency_ms}
+            estimatedCostUsd={requestCost}
+          />
           <ModelConfidence parsed={parsed} />
           <p className="muted">Confidence is model-reported and not calibrated. Human validation determines success rate.</p>
         </aside>
@@ -71,6 +81,7 @@ export default async function ResultPage({ params }: { params: Promise<{ id: str
           modelStats={modelStats}
           promptVersion={PROMPT_VERSION}
           promptStats={promptStats}
+          usageStats={usageStats}
           compact
         />
       </section>
@@ -117,6 +128,34 @@ function Fields({ parsed }: { parsed: BillRecognitionResult }) {
   );
 }
 
+function UsageDetails({
+  inputTokens,
+  outputTokens,
+  totalTokens,
+  latencyMs,
+  estimatedCostUsd
+}: {
+  inputTokens: number | null;
+  outputTokens: number | null;
+  totalTokens: number | null;
+  latencyMs: number | null;
+  estimatedCostUsd: number | null;
+}) {
+  return (
+    <section style={{ marginTop: 20 }}>
+      <h3>Request usage</h3>
+      <dl className="kv">
+        <dt>Estimated cost</dt><dd>{formatUsd(estimatedCostUsd)}</dd>
+        <dt>Input tokens</dt><dd>{formatNumber(inputTokens)}</dd>
+        <dt>Output tokens</dt><dd>{formatNumber(outputTokens)}</dd>
+        <dt>Total tokens</dt><dd>{formatNumber(totalTokens)}</dd>
+        <dt>Latency</dt><dd>{latencyMs === null ? <span className="muted">Not available</span> : `${(latencyMs / 1000).toFixed(2)}s`}</dd>
+      </dl>
+      <p className="muted">Cost is estimated from stored token usage and configured model pricing. Actual billing may differ.</p>
+    </section>
+  );
+}
+
 function ModelConfidence({ parsed }: { parsed: BillRecognitionResult }) {
   const confidence = parsed.confidence_by_field || {};
   const rows: [string, number | null | undefined][] = [
@@ -156,4 +195,9 @@ function formatValue(value: unknown) {
 function formatBool(value: boolean | null) {
   if (value === null) return null;
   return value ? "Yes" : "No";
+}
+
+function formatNumber(value: number | null) {
+  if (value === null) return <span className="muted">Not available</span>;
+  return new Intl.NumberFormat("en-US").format(value);
 }

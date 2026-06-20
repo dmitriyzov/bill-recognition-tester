@@ -2,7 +2,7 @@ import { requireAuth } from "../lib/auth";
 import { APP_NAME, PROMPT_VERSION, SCHEMA_VERSION } from "../lib/config";
 import { MODEL_OPTIONS } from "../lib/models";
 import { PROMPT_METADATA } from "../lib/prompt";
-import { getStats } from "../lib/db";
+import { getStats, getUsageStats } from "../lib/db";
 import { UploadForm } from "../components/UploadForm";
 import { StatsBlock } from "../components/StatsBlock";
 
@@ -11,6 +11,7 @@ export default async function HomePage() {
   const activeModel = MODEL_OPTIONS.find((model) => model.enabled)!;
   const modelStats = getStats(activeModel.model);
   const promptStats = getStats(activeModel.model, PROMPT_VERSION);
+  const usageStats = getUsageStats(activeModel.model);
 
   return (
     <main className="container">
@@ -35,6 +36,7 @@ export default async function HomePage() {
             modelStats={modelStats}
             promptVersion={PROMPT_VERSION}
             promptStats={promptStats}
+            usageStats={usageStats}
           />
         </aside>
       </div>
@@ -54,4 +56,3 @@ export default async function HomePage() {
     </main>
   );
 }
-

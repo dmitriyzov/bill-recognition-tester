@@ -61,3 +61,10 @@ export type Stats = {
   successRate: number | null;
 };
 
+export type UsageStats = {
+  requests: number;
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+  estimatedCostUsd: number | null;
+};
