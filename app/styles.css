@@ -166,6 +166,15 @@ pre {
   background: #fff;
 }
 
+.thumb {
+  width: 120px;
+  max-height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+
 .kv {
   display: grid;
   grid-template-columns: 190px minmax(0, 1fr);
@@ -192,6 +201,29 @@ pre {
   font-weight: 700;
 }
 
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  padding: 10px 8px;
+  vertical-align: top;
+}
+
+th {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
 .actions {
   display: flex;
   gap: 10px;
@@ -203,4 +235,3 @@ pre {
     grid-template-columns: 1fr;
   }
 }
-

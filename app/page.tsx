@@ -20,7 +20,10 @@ export default async function HomePage() {
           <h1>{APP_NAME}</h1>
           <p className="muted">Upload a front-side image of one U.S. bill and validate the extracted fields.</p>
         </div>
-        <a href="/logout">Log out</a>
+        <div className="actions">
+          <a className="button secondary" href="/results">Results</a>
+          <a href="/logout">Log out</a>
+        </div>
       </div>
 
       <div className="grid">

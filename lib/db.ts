@@ -100,6 +100,28 @@ export function getRecognition(id: number) {
     .get(id) as RecognitionRow | undefined;
 }
 
+export type RecognitionListRow = RecognitionRow & {
+  validation_decision: "accurate" | "inaccurate" | null;
+  validation_notes: string | null;
+  validation_created_at: string | null;
+};
+
+export function getRecentRecognitions(limit = 100) {
+  return getDb()
+    .prepare(
+      `SELECT
+        r.*,
+        v.decision AS validation_decision,
+        v.notes AS validation_notes,
+        v.created_at AS validation_created_at
+       FROM recognitions r
+       LEFT JOIN validations v ON v.recognition_id = r.id
+       ORDER BY r.id DESC
+       LIMIT ?`
+    )
+    .all(limit) as RecognitionListRow[];
+}
+
 export function getValidation(recognitionId: number) {
   return getDb()
     .prepare("SELECT * FROM validations WHERE recognition_id = ?")
