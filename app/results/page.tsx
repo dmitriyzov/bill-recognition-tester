@@ -17,7 +17,7 @@ export default async function ResultsPage() {
         </div>
         <div className="actions">
           <a className="button secondary" href="/">New upload</a>
-          <a href="/logout">Log out</a>
+          <a className="button subtle" href="/logout">Log out</a>
         </div>
       </div>
 

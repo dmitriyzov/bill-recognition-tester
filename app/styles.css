@@ -98,6 +98,12 @@ button.secondary {
   background: #344054;
 }
 
+.button.subtle {
+  background: #ffffff;
+  color: #344054;
+  border: 1px solid var(--border);
+}
+
 button.danger {
   background: var(--danger);
 }

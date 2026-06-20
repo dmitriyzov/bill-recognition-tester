@@ -34,7 +34,7 @@ export default async function ResultPage({ params }: { params: Promise<{ id: str
         <div className="actions">
           <a className="button secondary" href="/results">Results</a>
           <a className="button secondary" href="/">New upload</a>
-          <a href="/logout">Log out</a>
+          <a className="button subtle" href="/logout">Log out</a>
         </div>
       </div>
 

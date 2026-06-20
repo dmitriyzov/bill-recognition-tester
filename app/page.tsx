@@ -22,7 +22,7 @@ export default async function HomePage() {
         </div>
         <div className="actions">
           <a className="button secondary" href="/results">Results</a>
-          <a href="/logout">Log out</a>
+          <a className="button subtle" href="/logout">Log out</a>
         </div>
       </div>
 
