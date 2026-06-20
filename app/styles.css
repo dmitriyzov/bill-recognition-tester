@@ -207,6 +207,21 @@ pre {
   font-weight: 700;
 }
 
+.success-pill {
+  background: #ecfdf3;
+  color: #067647;
+}
+
+.danger-pill {
+  background: #fef3f2;
+  color: #b42318;
+}
+
+.muted-pill {
+  background: #f2f4f7;
+  color: #667085;
+}
+
 .table-wrap {
   overflow-x: auto;
 }

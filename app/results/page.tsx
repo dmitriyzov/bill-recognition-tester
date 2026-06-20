@@ -2,7 +2,6 @@ import Link from "next/link";
 import { requireAuth } from "../../lib/auth";
 import { getRecentRecognitions } from "../../lib/db";
 import { publicImagePath } from "../../lib/storage";
-import type { BillRecognitionResult } from "../../lib/types";
 
 export default async function ResultsPage() {
   await requireAuth();
@@ -34,16 +33,12 @@ export default async function ResultsPage() {
                   <th>Created</th>
                   <th>Model</th>
                   <th>Status</th>
-                  <th>Denomination</th>
-                  <th>Serial</th>
-                  <th>Series/year</th>
                   <th>Validation</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 {recognitions.map((recognition) => {
-                  const parsed = JSON.parse(recognition.parsed_result_json) as BillRecognitionResult;
                   return (
                     <tr key={recognition.id}>
                       <td>#{recognition.id}</td>
@@ -63,11 +58,8 @@ export default async function ResultsPage() {
                         <span className="muted">{recognition.prompt_version}</span>
                       </td>
                       <td><span className="pill">{recognition.status}</span></td>
-                      <td>{parsed.denomination === null ? <span className="muted">Not readable</span> : `$${parsed.denomination}`}</td>
-                      <td>{parsed.serial_number || <span className="muted">Not readable</span>}</td>
-                      <td>{parsed.series_year || parsed.series_label || <span className="muted">Not readable</span>}</td>
                       <td>{formatValidation(recognition.status, recognition.validation_decision)}</td>
-                      <td><Link href={`/results/${recognition.id}`}>View</Link></td>
+                      <td><Link className="button secondary" href={`/results/${recognition.id}`}>View</Link></td>
                     </tr>
                   );
                 })}
@@ -90,8 +82,8 @@ function formatDate(value: string) {
 }
 
 function formatValidation(status: string, decision: "accurate" | "inaccurate" | null) {
-  if (status !== "recognized") return <span className="muted">Not validatable</span>;
-  if (decision === "accurate") return <span className="success">Accurate</span>;
-  if (decision === "inaccurate") return "Inaccurate";
-  return <span className="muted">Unreviewed</span>;
+  if (status !== "recognized") return <span className="pill muted-pill">Not validatable</span>;
+  if (decision === "accurate") return <span className="pill success-pill">Accurate</span>;
+  if (decision === "inaccurate") return <span className="pill danger-pill">Inaccurate</span>;
+  return <span className="pill muted-pill">Unreviewed</span>;
 }
