@@ -74,6 +74,13 @@ export default async function ResultPage({ params }: { params: Promise<{ id: str
         {recognition.status === "recognized" && !validation && <ValidationForm recognitionId={recognition.id} />}
       </section>
 
+      <section style={{ marginTop: 20 }}>
+        <details>
+          <summary>Raw model response</summary>
+          <pre>{JSON.stringify(JSON.parse(recognition.raw_response_json), null, 2)}</pre>
+        </details>
+      </section>
+
       <section className="card" style={{ marginTop: 20 }}>
         <h2>Current stats</h2>
         <StatsBlock
@@ -84,13 +91,6 @@ export default async function ResultPage({ params }: { params: Promise<{ id: str
           usageStats={usageStats}
           compact
         />
-      </section>
-
-      <section style={{ marginTop: 20 }}>
-        <details>
-          <summary>Raw model response</summary>
-          <pre>{JSON.stringify(JSON.parse(recognition.raw_response_json), null, 2)}</pre>
-        </details>
       </section>
     </main>
   );
